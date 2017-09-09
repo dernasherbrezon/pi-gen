@@ -16,6 +16,7 @@ systemctl disable hwclock.sh
 systemctl disable nfs-common
 systemctl disable rpcbind
 systemctl disable ssh
+systemctl disable lighttpd
 systemctl enable regenerate_ssh_host_keys
 systemctl enable resize2fs_once
 EOF
