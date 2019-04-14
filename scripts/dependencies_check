@@ -10,11 +10,11 @@ dependencies_check()
 
 	for depfile in "$@"; do
 		if [[ -e "$depfile" ]]; then
-			deps="$(sed -f "${SCRIPT_DIR}/remove-comments.sed" < ${BASE_DIR}/depends)"
+			deps="$(sed -f "${SCRIPT_DIR}/remove-comments.sed" < "${BASE_DIR}/depends")"
 
 		fi
 		for dep in $deps; do
-			if ! hash ${dep%:*} 2>/dev/null; then
+			if ! hash "${dep%:*}" 2>/dev/null; then
 				missing="${missing:+$missing }${dep#*:}"
 			fi
 		done
@@ -26,5 +26,13 @@ dependencies_check()
 		echo "This can be resolved on Debian/Raspbian systems by installing:"
 		echo "$missing"
 		false
+	fi
+
+
+	if ! grep -q "/proc/sys/fs/binfmt_misc" /proc/mounts; then
+		echo "Module binfmt_misc not loaded in host"
+		echo "Please run:"
+		echo "  sudo modprobe binfmt_misc"
+		exit 1
 	fi
 }
