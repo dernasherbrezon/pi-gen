@@ -21,6 +21,7 @@ libmtp-runtime
 rsync
 htop
 r2cloud
+rtl-biast
 man-db
 policykit-1
 ssh-import-id
