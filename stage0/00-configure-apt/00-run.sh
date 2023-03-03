@@ -14,8 +14,10 @@ else
 	rm -f "${ROOTFS_DIR}/etc/apt/apt.conf.d/51cache"
 fi
 
-on_chroot apt-key add - < files/raspberrypi.gpg.key
-on_chroot apt-key add - < files/r2cloud.gpg.key
+cat files/raspberrypi.gpg.key | gpg --dearmor > "${STAGE_WORK_DIR}/raspberrypi-archive-stable.gpg"
+cat files/r2cloud.gpg.key | gpg --dearmor > "${STAGE_WORK_DIR}/r2cloud.gpg.key"
+install -m 644 "${STAGE_WORK_DIR}/raspberrypi-archive-stable.gpg" "${ROOTFS_DIR}/etc/apt/trusted.gpg.d/"
+install -m 644 "${STAGE_WORK_DIR}/r2cloud.gpg.key" "${ROOTFS_DIR}/etc/apt/trusted.gpg.d/"
 on_chroot << EOF
 apt-get update
 apt-get dist-upgrade -y
