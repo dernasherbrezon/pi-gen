@@ -18,7 +18,7 @@ cat files/raspberrypi.gpg.key | gpg --dearmor > "${STAGE_WORK_DIR}/raspberrypi-a
 install -m 644 "${STAGE_WORK_DIR}/raspberrypi-archive-stable.gpg" "${ROOTFS_DIR}/etc/apt/trusted.gpg.d/"
 
 cat files/r2cloud.gpg.key | gpg --dearmor > "${STAGE_WORK_DIR}/r2cloud.gpg"
-install -m 644 "${STAGE_WORK_DIR}/r2cloud.gpg" "${ROOTFS_DIR}/etc/apt/trusted.gpg.d/"
+install -m 644 "${STAGE_WORK_DIR}/r2cloud.gpg" "${ROOTFS_DIR}/usr/share/keyrings/"
 
 on_chroot <<- \EOF
 	ARCH="$(dpkg --print-architecture)"
