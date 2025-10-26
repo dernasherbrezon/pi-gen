@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
-install -m 644 files/sources.list "${ROOTFS_DIR}/etc/apt/"
-install -m 644 files/raspi.list "${ROOTFS_DIR}/etc/apt/sources.list.d/"
+true > "${ROOTFS_DIR}/etc/apt/sources.list"
+install -m 644 files/raspbian.sources "${ROOTFS_DIR}/etc/apt/sources.list.d/"
+install -m 644 files/raspi.sources "${ROOTFS_DIR}/etc/apt/sources.list.d/"
 install -m 644 files/r2cloud.list "${ROOTFS_DIR}/etc/apt/sources.list.d/"
-sed -i "s/RELEASE/${RELEASE}/g" "${ROOTFS_DIR}/etc/apt/sources.list"
-sed -i "s/RELEASE/${RELEASE}/g" "${ROOTFS_DIR}/etc/apt/sources.list.d/raspi.list"
+sed -i "s/RELEASE/${RELEASE}/g" "${ROOTFS_DIR}/etc/apt/sources.list.d/raspbian.sources"
+sed -i "s/RELEASE/${RELEASE}/g" "${ROOTFS_DIR}/etc/apt/sources.list.d/raspi.sources"
 sed -i "s/RELEASE/${RELEASE}/g" "${ROOTFS_DIR}/etc/apt/sources.list.d/r2cloud.list"
 
 if [ -n "$APT_PROXY" ]; then
@@ -14,12 +15,15 @@ else
 	rm -f "${ROOTFS_DIR}/etc/apt/apt.conf.d/51cache"
 fi
 
-cat files/raspberrypi.gpg.key | gpg --dearmor > "${STAGE_WORK_DIR}/raspberrypi-archive-stable.gpg"
-install -m 644 "${STAGE_WORK_DIR}/raspberrypi-archive-stable.gpg" "${ROOTFS_DIR}/etc/apt/trusted.gpg.d/"
+if [ -n "$TEMP_REPO" ]; then
+	install -m 644 /dev/null "${ROOTFS_DIR}/etc/apt/sources.list.d/00-temp.list"
+	echo "$TEMP_REPO" | sed "s/RELEASE/$RELEASE/g" > "${ROOTFS_DIR}/etc/apt/sources.list.d/00-temp.list"
+else
+	rm -f "${ROOTFS_DIR}/etc/apt/sources.list.d/00-temp.list"
+fi
 
-cat files/r2cloud.gpg.key | gpg --dearmor > "${STAGE_WORK_DIR}/r2cloud.gpg"
-install -m 644 "${STAGE_WORK_DIR}/r2cloud.gpg" "${ROOTFS_DIR}/usr/share/keyrings/"
-
+install -m 644 files/raspberrypi-archive-keyring.pgp "${ROOTFS_DIR}/usr/share/keyrings/"
+install -m 644 files/r2cloud.gpg.key "${ROOTFS_DIR}/usr/share/keyrings/"
 on_chroot <<- \EOF
 	ARCH="$(dpkg --print-architecture)"
 	if [ "$ARCH" = "armhf" ]; then
