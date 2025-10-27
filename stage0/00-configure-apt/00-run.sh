@@ -23,7 +23,7 @@ else
 fi
 
 install -m 644 files/raspberrypi-archive-keyring.pgp "${ROOTFS_DIR}/usr/share/keyrings/"
-install -m 644 files/r2cloud.gpg.key "${ROOTFS_DIR}/usr/share/keyrings/"
+install -m 644 files/r2cloud.gpg "${ROOTFS_DIR}/usr/share/keyrings/"
 on_chroot <<- \EOF
 	ARCH="$(dpkg --print-architecture)"
 	if [ "$ARCH" = "armhf" ]; then
