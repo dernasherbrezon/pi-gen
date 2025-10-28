@@ -54,6 +54,10 @@ on_chroot << EOF
 systemctl enable systemd-time-wait-sync
 EOF
 
+on_chroot << EOF
+systemctl enable r2cloud
+EOF
+
 rm -f "${ROOTFS_DIR}/etc/ssh/"ssh_host_*_key*
 
 sed -i 's/^FONTFACE=.*/FONTFACE=""/;s/^FONTSIZE=.*/FONTSIZE=""/' "${ROOTFS_DIR}/etc/default/console-setup"
