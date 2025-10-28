@@ -1,0 +1,5 @@
+Types: deb
+URIs: http://apt.leosatdata.com
+Suites: RELEASE
+Components: main
+Signed-By: /usr/share/keyrings/r2cloud.gpg
